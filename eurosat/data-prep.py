@@ -1,6 +1,7 @@
 import numpy as np
 import random 
 from pathlib import Path 
+import json
 
 
 def verify_splits(path=Path("./data/EuroSAT_RGB/")): 
@@ -25,13 +26,17 @@ def verify_splits(path=Path("./data/EuroSAT_RGB/")):
 
 
 def data_prep(path: Path, split: tuple[float, float, float]): 
+    mapping = dict()
     train = []
     test  = []
     val   = []
     label = 0
     for entry in path.iterdir(): 
         if entry.is_dir(): 
-            files     = [p.name for p in entry.iterdir() if p.is_file()]
+            mapping[entry.name] = label
+
+            files     = [entry.name + '/' + p.name for p in entry.iterdir() if p.is_file()]
+            random.shuffle(files)
             size      = len(files)
             train_end = int(round(split[0] * size))
             val_end   = train_end + int(round(split[1] * size))
@@ -42,6 +47,8 @@ def data_prep(path: Path, split: tuple[float, float, float]):
 
             label += 1
 
+
+    json.dump(mapping, open(path / 'mapping.txt', 'w'))
     np.savetxt(path / "val.txt"  , np.array(val)  , fmt="%s")
     np.savetxt(path / "test.txt" , np.array(test) , fmt="%s")
     np.savetxt(path / "train.txt", np.array(train), fmt="%s")
@@ -61,6 +68,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
 
