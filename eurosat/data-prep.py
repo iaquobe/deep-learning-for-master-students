@@ -4,6 +4,10 @@ from pathlib import Path
 import json
 
 
+# CHANGE THIS IF THE DATA IS SOMEWHERE ELSE 
+PATH  = Path("./data/EuroSAT_RGB/")
+
+
 def verify_splits(path=Path("./data/EuroSAT_RGB/")): 
     with open(path / "val.txt", "r") as f: 
         val = set([l.split()[0] for l in f]) 
@@ -59,11 +63,10 @@ def main():
     random.seed(seed)
     np.random.seed(seed)
 
-    path  = Path("./data/EuroSAT_RGB/")
     split = (.7, .15, .15)
-    data_prep(path, split)
+    data_prep(PATH, split)
 
-    verify_splits(path)
+    verify_splits(PATH)
 
 
 if __name__ == "__main__":
