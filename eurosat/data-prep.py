@@ -2,13 +2,13 @@ import numpy as np
 import random 
 from pathlib import Path 
 import json
-
+import os 
 
 # CHANGE THIS IF THE DATA IS SOMEWHERE ELSE 
 PATH  = Path("./data/EuroSAT_RGB/")
 
 
-def verify_splits(path=Path("./data/EuroSAT_RGB/")): 
+def verify_splits(path=PATH): 
     with open(path / "val.txt", "r") as f: 
         val = set([l.split()[0] for l in f]) 
 
@@ -35,21 +35,33 @@ def data_prep(path: Path, split: tuple[float, float, float]):
     test  = []
     val   = []
     label = 0
+
+    entries = []
     for entry in path.iterdir(): 
-        if entry.is_dir(): 
-            mapping[entry.name] = label
+        if entry.is_dir():
+            entries.append(entry)
 
-            files     = [entry.name + '/' + p.name for p in entry.iterdir() if p.is_file()]
-            random.shuffle(files)
-            size      = len(files)
-            train_end = int(round(split[0] * size))
-            val_end   = train_end + int(round(split[1] * size))
+    entries.sort()
 
-            train.extend([(file, label) for file in files[:train_end]])
-            test .extend([(file, label) for file in files[train_end:val_end]])
-            val  .extend([(file, label) for file in files[val_end:]])
+    for entry in entries: 
+        mapping[entry.name] = label
+        path_entry = "./" + os.path.join(entry)
 
-            label += 1
+        filenames = os.listdir(path=path_entry)
+
+        filenames.sort()
+        random.shuffle(filenames)
+
+        files     = [os.path.basename(entry) + "/" + filename for filename in filenames]
+        size      = len(files)
+        train_end = int(round(split[0] * size))
+        val_end   = train_end + int(round(split[1] * size))
+
+        train.extend([(file, label) for file in files[:train_end]])
+        test .extend([(file, label) for file in files[train_end:val_end]])
+        val  .extend([(file, label) for file in files[val_end:]])
+
+        label += 1
 
 
     json.dump(mapping, open(path / 'mapping.txt', 'w'))
