@@ -36,23 +36,17 @@ def data_prep(path: Path, split: tuple[float, float, float]):
     val   = []
     label = 0
 
-    entries = []
-    for entry in path.iterdir(): 
-        if entry.is_dir():
-            entries.append(entry)
-
+    entries = [entry for entry in path.iterdir() if entry.is_dir()]
     entries.sort()
 
     for entry in entries: 
         mapping[entry.name] = label
-        path_entry = "./" + os.path.join(entry)
-
-        filenames = os.listdir(path=path_entry)
+        filenames = os.listdir(path=entry)
 
         filenames.sort()
         random.shuffle(filenames)
 
-        files     = [os.path.basename(entry) + "/" + filename for filename in filenames]
+        files     = [entry.name + "/" + filename for filename in filenames]
         size      = len(files)
         train_end = int(round(split[0] * size))
         val_end   = train_end + int(round(split[1] * size))
