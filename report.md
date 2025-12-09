@@ -111,26 +111,19 @@ It creates top/bottom 5 plots under:
 
 ## RGB Models 
 
-TPR for RGB models
-![tpr](./plots/rgb-tpr.png)
+![tpr for rgb models](./plots/rgb-tpr.png)
 
-Complex Augmentation Model
-![complex ranking](./plots/rgb-complex-ranking.png)
+![rgb complex augmentation ranking](./plots/rgb-complex-ranking.png)
 
-Simple Augmentation Model
-![simple ranking](./plots/rgb-simple-ranking.png)
+![rgb simple augmentaion ranking](./plots/rgb-simple-ranking.png)
 
 
 ## MS Models
 
 
-TPR for MS models
-![tpr](./plots/ms-tpr.png)
+![tpr for ms models](./plots/ms-tpr.png)
 
-Concatenation Model 
-![concat ranking](./plots/ms-concat-ranking.png)
+![ms concat model ranking](./plots/ms-concat-ranking.png)
 
-Addition Model 
-![add ranking](./plots/ms-add-ranking.png)
+![ms add model ranking](./plots/ms-add-ranking.png)
 
-aslk;djf
