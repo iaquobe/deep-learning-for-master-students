@@ -1,0 +1,138 @@
+import random
+import logging
+import torch 
+import numpy as np
+from pathlib import Path 
+from tqdm import tqdm 
+from torch.utils.data import DataLoader
+from torch.nn import CrossEntropyLoss
+from torchvision.models.mobilenetv3 import mobilenet_v3_small, MobileNet_V3_Small_Weights
+from torchvision.transforms import v2
+
+from eurosat.ms.dataset import GeoData
+from eurosat.utils.plotting import plot_tpr
+from eurosat.utils.data_prep import data_prep, verify_splits
+from eurosat.utils.training import train
+
+class MultispectralSingleModel(torch.nn.Module): 
+    '''Based on one mobilenet model. 
+    
+    For an input x with shape: (6, 224, 224)
+    The model is run twice. Once on the first 3 channels, then on the last 3 channels. 
+    The last classification layer of mobilenet is removed. 
+    Instead the final layer brings together both parts of the input (2048 -> 10)
+
+    Both parts of the input use the same weights for the cnn part
+    '''
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        weights     = MobileNet_V3_Small_Weights.DEFAULT
+        self.model = mobilenet_v3_small(weights=weights)
+        self.model.classifier.pop(3)
+
+        self.final = torch.nn.Linear(2048, 10)
+
+
+    def forward(self, x): 
+        y1 = self.model(x[:, :3])
+        y2 = self.model(x[:, 3:])
+        y  = self.final(torch.concat([y1, y2], dim=-1))
+
+        return y
+
+
+class MultispectralDoubleModel(torch.nn.Module): 
+    '''Based on two mobilenet model. 
+    
+    For an input x with shape: (6, 224, 224)
+    The model is run twice. Once on the first 3 channels, then on the last 3 channels. 
+    The last classification layer of mobilenet is removed. 
+    Instead the final layer brings together both parts of the input (2048 -> 10)
+
+    Here both parts of the input use different weights for the cnn part
+    '''
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        weights     = MobileNet_V3_Small_Weights.DEFAULT
+        self.model1 = mobilenet_v3_small(weights=weights)
+        self.model1.classifier.pop(3)
+
+        self.model2 = mobilenet_v3_small(weights=weights)
+        self.model2.classifier.pop(3)
+
+        self.final = torch.nn.Linear(2048, 10)
+
+
+    def forward(self, x): 
+        y1 = self.model1(x[:, :3])
+        y2 = self.model2(x[:, 3:])
+        y  = self.final(torch.concat([y1, y2], dim=-1))
+
+        return y
+
+
+
+def main():
+    weights    = MobileNet_V3_Small_Weights.DEFAULT
+    preprocess = weights.transforms()
+    loss       = CrossEntropyLoss()
+    path       = Path('./data/EuroSAT_RGB')
+
+    tpr       =  dict()
+    batchsize = 64
+    epochs    = 10
+    val_dl    = DataLoader(GeoData(preprocess, path, 'val.txt')  , batch_size=batchsize)
+
+    print("Training Model Simple Augmentation")
+    augmentation = v2.Compose([
+        v2.RandomHorizontalFlip(),
+        v2.RandomVerticalFlip()
+    ])
+    data     = GeoData(preprocess, path, 'train.txt', augmentation)
+    train_dl = DataLoader(data, batch_size=batchsize, shuffle=True)
+    model                = mobilenet_v3_small(weights=weights)
+    model.classifier[3]  = torch.nn.Linear(1024, 10)
+    params               = model.parameters()
+    optimizer            = torch.optim.Adam(params)
+    tpr["simple-agumentation"] = train(model,
+                                       loss,
+                                       optimizer,
+                                       train_dl,
+                                       val_dl,
+                                       "models/model-simple-augmentation.pth", 
+                                       epochs)
+
+
+
+
+    print("Training Model Complex Augmentation")
+    augmentation = v2.Compose([
+        v2.RandomHorizontalFlip(),
+        v2.RandomVerticalFlip(), 
+        v2.AutoAugment()
+    ])
+    data                 = GeoData(preprocess, path, 'train.txt', augmentation)
+    train_dl             = DataLoader(data, batch_size=batchsize, shuffle=True)
+    model                = mobilenet_v3_small(weights=weights)
+    model.classifier[3]  = torch.nn.Linear(1024, 10)
+    params               = model.parameters()
+    optimizer            = torch.optim.Adam(params)
+    tpr["complex-agumentation"] = train(model,
+                                        loss,
+                                        optimizer,
+                                        train_dl,
+                                        val_dl,
+                                        "models/model-complex-augmentation.pth",
+                                        epochs)
+    plot_tpr(tpr)
+
+    
+
+
+if __name__ == "__main__":
+    logging.basicConfig()
+    seed = 3736695 
+    torch.manual_seed(seed)
+    np.random.seed(seed)
+    random.seed(seed)
+    main()
