@@ -3,43 +3,48 @@ import torch
 import numpy as np
 from pathlib import Path 
 import matplotlib.pyplot as plt
+from PIL import Image
 
-def ranking_diagnostic(tensor_path, data_path, split_name): 
+def plot_ranking(logits, data_path, split_name, out_path='./plots/ranking.png'): 
     i2n = { v: k for k, v in json.load(open(data_path / 'mapping.txt')).items()}
     split  = np.array([l.split() for l in open(data_path / split_name)])
-    logits = torch.load(tensor_path)
+    # logits = torch.load(tensor_path)
 
+    classes      = range(10)
     class_images = []
-    for c in [0, 1, 3]: 
+    for c in classes: 
         top    = logits[:,c].topk(5)
         top    = split[top.indices, 0]
         bottom = logits[:,c].topk(5, largest=False)
         bottom = split[bottom.indices, 0]
 
         class_images.append((
-            [Image.open(data_path / b) for b in bottom],
-            [Image.open(data_path / t) for t in top]
+            [Image.open(data_path / b) for b in top],
+            [Image.open(data_path / t) for t in bottom]
         ))
 
     plt.figure()
     for i, c in enumerate(class_images): 
         for k, img in enumerate(c[0], start=1): 
-            plt.subplot(3, 10, k + 10*i)
+            plt.subplot(len(classes), 11, k + 11*i)
             plt.imshow(img)
             plt.yticks([])
             plt.xticks([])
-            if i == 0:
-                plt.title("top {}".format(k))
+            if i == 0 and k == 3:
+                plt.title("top 5")
             if k == 1: 
-                plt.ylabel("{}".format(i2n[i]))
+                plt.ylabel("{}".format(i2n[i]), rotation=0, ha="right")
 
         for k, img in enumerate(c[1], start=1): 
-            plt.subplot(3, 10, 5 + k + 10*i)
+            plt.subplot(len(classes), 11, 6 + k + 11*i)
             plt.imshow(img)
             plt.yticks([])
             plt.xticks([])
-            if i == 0:
-                plt.title("bot {}".format(k))
+            if i == 0 and k == 3:
+                plt.title("bottom 5")
+
+    plt.savefig(out_path)
+
 
 
 def tpr_plot(metadata_path, tensor_path, data_path, split_name): 
@@ -54,10 +59,22 @@ def tpr_plot(metadata_path, tensor_path, data_path, split_name):
 
     models = [l for l in open(metadata_path)]
     for model_name, model_perf in zip(models, tpr): 
-        plt.plot(model_perf, label=model_name)
+        plt.plot(model_perf, label="model")
         plt.ylabel("tpr")
         plt.xlabel("epoch")
     plt.legend()
+
+
+
+
+def plot_tpr(model_tprs, out_path="./plots/tpr.png"): 
+    for k, v in model_tprs.items(): 
+        plt.plot(v, label=k)
+    plt.ylabel("tpr")
+    plt.xlabel("epoch")
+    plt.legend()
+    plt.savefig(out_path)
+
 
 
 def main():
