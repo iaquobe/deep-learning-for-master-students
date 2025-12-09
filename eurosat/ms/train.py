@@ -10,7 +10,7 @@ from torchvision.models.mobilenetv3 import mobilenet_v3_small, MobileNet_V3_Smal
 from torchvision.transforms import v2
 
 from eurosat.ms.dataset import GeoData
-from eurosat.ms.model import MSSingleModel, MSDoubleModel
+from eurosat.ms.model import MSAddModel, MSConcatModel
 from eurosat.utils.plotting import plot_tpr
 from eurosat.utils.data_prep import data_prep, verify_splits
 from eurosat.utils.training import train
@@ -19,12 +19,11 @@ from eurosat.utils.training import train
 
 def main():
     weights    = MobileNet_V3_Small_Weights.DEFAULT
-    preprocess = weights.transforms()
     loss       = CrossEntropyLoss()
     path       = Path('./data/EuroSAT_MS')
     tpr        =  dict()
     batchsize  = 64
-    epochs     = 10
+    epochs     = 2
     split      = (.75, .15, .15)
 
     print("Prepare splits")
@@ -39,7 +38,7 @@ def main():
     ])
     data      = GeoData(path, 'train.txt', augmentation)
     train_dl  = DataLoader(data, batch_size=batchsize, shuffle=True)
-    model     = MSSingleModel()
+    model     = MSConcatModel()
     params    = model.parameters()
     optimizer = torch.optim.Adam(params)
     tpr["simple-agumentation"] = train(model,
@@ -47,7 +46,7 @@ def main():
                                        optimizer,
                                        train_dl,
                                        val_dl,
-                                       Path("models/ms-simple-augmentation.pth"), 
+                                       Path("models/ms-concat.pth"), 
                                        epochs)
 
 
@@ -57,11 +56,10 @@ def main():
     augmentation = v2.Compose([
         v2.RandomHorizontalFlip(),
         v2.RandomVerticalFlip(), 
-        # v2.AutoAugment()
     ])
     data      = GeoData(path, 'train.txt', augmentation)
     train_dl  = DataLoader(data, batch_size=batchsize, shuffle=True)
-    model     = MSSingleModel()
+    model     = MSAddModel()
     params    = model.parameters()
     params    = model.parameters()
     optimizer = torch.optim.Adam(params)
@@ -70,7 +68,7 @@ def main():
                                         optimizer,
                                         train_dl,
                                         val_dl,
-                                        Path("models/ms-complex-augmentation.pth"),
+                                        Path("models/ms-add.pth"),
                                         epochs)
     plot_tpr(tpr, out_path='./plots/ms-tpr.png')
 

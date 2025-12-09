@@ -1,12 +1,12 @@
+import argparse
 import numpy as np
 import random 
 from pathlib import Path 
 import json
 import os 
 
-PATH  = Path("./data/EuroSAT_RGB/")
 
-def verify_splits(path=PATH): 
+def verify_splits(path): 
     with open(path / "val.txt", "r") as f: 
         val = set([l.split()[0] for l in f]) 
 
@@ -63,14 +63,19 @@ def data_prep(path: Path, split: tuple[float, float, float]):
 
 
 def main(): 
-    seed  = 42069
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-d", "--data_dir", default="./data/EuroSAT_RGB")
+    args = parser.parse_args()
+    path = Path(args.data_dir)
+    
+    seed = 3736695 
     random.seed(seed)
     np.random.seed(seed)
 
     split = (.7, .15, .15)
-    data_prep(PATH, split)
+    data_prep(path, split)
 
-    verify_splits(PATH)
+    verify_splits(path)
 
 
 if __name__ == "__main__":

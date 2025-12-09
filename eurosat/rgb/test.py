@@ -28,13 +28,13 @@ def main():
     model1 = RGBModel()
     model1.load_state_dict(torch.load(model_path / 'rgb-simple-augmentation.pth'))
     loss1, _, logits1      = test(model1, loss, test_dl)
-    plot_ranking(logits1, path, "test.txt", out_path='./plots/simple-ranking.png')
+    plot_ranking(logits1, path, "test.txt", out_path='./plots/rgb-simple-ranking.png')
 
     # test model2 and plot top/bottom 5
     model2 = RGBModel()
     model2.load_state_dict(torch.load(model_path / 'rgb-complex-augmentation.pth'))
     loss2, _, logits2      = test(model2, loss, test_dl)
-    plot_ranking(logits2, path, "test.txt", out_path='./plots/complex-ranking.png')
+    plot_ranking(logits2, path, "test.txt", out_path='./plots/rgb-complex-ranking.png')
 
     print(f"loss model_1: {loss1}")
     print(f"loss model_2: {loss2}")

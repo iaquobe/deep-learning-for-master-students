@@ -21,7 +21,7 @@ def main():
     path       = Path('./data/EuroSAT_RGB')
     tpr        =  dict()
     batchsize  = 64
-    epochs     = 10
+    epochs     = 2
     split      = (.7, .15, .15)
 
 
@@ -39,7 +39,7 @@ def main():
     data      = GeoData(preprocess, path, 'train.txt', augmentation)
     train_dl  = DataLoader(data, batch_size=batchsize, shuffle=True)
     model     = RGBModel() 
-    params    = model.parameters()
+    params    = model.get_parameters()
     optimizer = torch.optim.Adam(params)
     tpr["simple-agumentation"] = train(model,
                                        loss,
@@ -59,7 +59,7 @@ def main():
     data      = GeoData(preprocess, path, 'train.txt', augmentation)
     train_dl  = DataLoader(data, batch_size=batchsize, shuffle=True)
     model     = RGBModel() 
-    params    = model.parameters()
+    params    = model.get_parameters()
     optimizer = torch.optim.Adam(params)
     tpr["complex-agumentation"] = train(model,
                                         loss,
@@ -69,7 +69,7 @@ def main():
                                         Path("models/rgb-complex-augmentation.pth"),
                                         epochs)
 
-    plot_tpr(tpr)
+    plot_tpr(tpr, out_path="./plots/rgb-tpr.png")
 
     
 

@@ -10,3 +10,6 @@ class RGBModel(torch.nn.Module):
 
     def forward(self, x): 
         return self.model(x)
+
+    def get_parameters(self):
+        return self.model.classifier.parameters()
