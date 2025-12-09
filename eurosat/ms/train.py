@@ -31,7 +31,7 @@ def main():
     verify_splits(path)
     val_dl    = DataLoader(GeoData(path, 'val.txt')  , batch_size=batchsize)
 
-    print("Training Model Simple Augmentation")
+    print("Training Model Concatenation")
     augmentation = v2.Compose([
         v2.RandomHorizontalFlip(),
         v2.RandomVerticalFlip()
@@ -41,18 +41,18 @@ def main():
     model     = MSConcatModel()
     params    = model.parameters()
     optimizer = torch.optim.Adam(params)
-    tpr["simple-agumentation"] = train(model,
-                                       loss,
-                                       optimizer,
-                                       train_dl,
-                                       val_dl,
-                                       Path("models/ms-concat.pth"), 
-                                       epochs)
+    tpr["concat"] = train(model,
+                          loss,
+                          optimizer,
+                          train_dl,
+                          val_dl,
+                          Path("models/ms-concat.pth"), 
+                          epochs)
 
 
 
 
-    print("Training Model Complex Augmentation")
+    print("Training Model Addition")
     augmentation = v2.Compose([
         v2.RandomHorizontalFlip(),
         v2.RandomVerticalFlip(), 
@@ -63,13 +63,13 @@ def main():
     params    = model.parameters()
     params    = model.parameters()
     optimizer = torch.optim.Adam(params)
-    tpr["complex-agumentation"] = train(model,
-                                        loss,
-                                        optimizer,
-                                        train_dl,
-                                        val_dl,
-                                        Path("models/ms-add.pth"),
-                                        epochs)
+    tpr["add"] = train(model,
+                       loss,
+                       optimizer,
+                       train_dl,
+                       val_dl,
+                       Path("models/ms-add.pth"),
+                       epochs)
     plot_tpr(tpr, out_path='./plots/ms-tpr.png')
 
     

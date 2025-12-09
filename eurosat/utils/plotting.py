@@ -14,7 +14,7 @@ def read_tiff(img_path):
         blue = src.read(2)
 
     rgb = np.dstack((red, green, blue)).astype(float)
-    rgb = (rgb * 255 / 1800).clip(0, 255).astype(np.uint8)
+    rgb = (rgb * 255 / 2000).clip(0, 255).astype(np.uint8)
 
     pil_img = Image.fromarray(rgb)
     return pil_img

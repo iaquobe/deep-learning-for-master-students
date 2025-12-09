@@ -11,28 +11,28 @@ Download and unzip the files to `./data`, so that the filestructure is like this
 
 ```
 ./data
-├── EuroSAT_MS
-│   ├── AnnualCrop
-│   ├── Forest
-│   ├── HerbaceousVegetation
-│   ├── Highway
-│   ├── Industrial
-│   ├── Pasture
-│   ├── PermanentCrop
-│   ├── Residential
-│   ├── River
-│   └── SeaLake
-└── EuroSAT_RGB
-    ├── AnnualCrop
-    ├── Forest
-    ├── HerbaceousVegetation
-    ├── Highway
-    ├── Industrial
-    ├── Pasture
-    ├── PermanentCrop
-    ├── Residential
-    ├── River
-    └── SeaLake
+|-- EuroSAT_MS
+|   |-- AnnualCrop
+|   |-- Forest
+|   |-- HerbaceousVegetation
+|   |-- Highway
+|   |-- Industrial
+|   |-- Pasture
+|   |-- PermanentCrop
+|   |-- Residential
+|   |-- River
+|   |-- SeaLake
+|-- EuroSAT_RGB
+    |-- AnnualCrop
+    |-- Forest
+    |-- HerbaceousVegetation
+    |-- Highway
+    |-- Industrial
+    |-- Pasture
+    |-- PermanentCrop
+    |-- Residential
+    |-- River
+    |-- SeaLake
 ```
 
 
@@ -103,3 +103,34 @@ Test again evaluates the models against the test set.
 It creates top/bottom 5 plots under: 
 `./plots/ms-concat-ranking.png` and 
 `./plots/ms-add-ranking.png` respectively
+
+
+# Model Report
+
+
+
+## RGB Models 
+
+TPR for RGB models
+![tpr](./plots/rgb-tpr.png)
+
+Complex Augmentation Model
+![complex ranking](./plots/rgb-complex-ranking.png)
+
+Simple Augmentation Model
+![simple ranking](./plots/rgb-simple-ranking.png)
+
+
+## MS Models
+
+
+TPR for MS models
+![tpr](./plots/ms-tpr.png)
+
+Concatenation Model 
+![concat ranking](./plots/ms-concat-ranking.png)
+
+Addition Model 
+![add ranking](./plots/ms-add-ranking.png)
+
+aslk;djf
