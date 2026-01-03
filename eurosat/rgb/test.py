@@ -22,7 +22,7 @@ def main(override=False):
     model_path = Path('./models/')
 
     batchsize = 64
-    test_dl   = DataLoader(GeoData(preprocess, path, 'test.txt') , batch_size=batchsize, shuffle=False)
+    test_dl   = DataLoader(GeoData(preprocess, path, 'test.txt') , batch_size=batchsize)
 
     # test model1 and plot top/bottom 5
     model1 = RGBModel()
