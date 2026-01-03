@@ -45,7 +45,7 @@ def train(model: torch.nn.Module,
                 tqdm.write(f"batch {batch}")
                 tqdm.write(f"\tloss: {loss:>7f}")
                 tqdm.write(f"\ttpr: {tpr}")
-                break
+                # break
 
         loss, acc, _ = test(model, loss_fn, val, desc="Validate")
         tpr_prog.append(acc)

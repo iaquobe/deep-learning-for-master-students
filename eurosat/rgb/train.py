@@ -21,7 +21,7 @@ def main():
     path       = Path('./data/EuroSAT_RGB')
     tpr        =  dict()
     batchsize  = 64
-    epochs     = 2
+    epochs     = 10 
     split      = (.7, .15, .15)
 
 

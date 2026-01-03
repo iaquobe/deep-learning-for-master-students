@@ -14,7 +14,7 @@ from eurosat.utils.training import test
 
 
 
-def main():
+def main(override=False):
     weights    = MobileNet_V3_Small_Weights.DEFAULT
     preprocess = weights.transforms()
     loss       = CrossEntropyLoss()
@@ -22,19 +22,33 @@ def main():
     model_path = Path('./models/')
 
     batchsize = 64
-    test_dl   = DataLoader(GeoData(preprocess, path, 'test.txt') , batch_size=batchsize)
+    test_dl   = DataLoader(GeoData(preprocess, path, 'test.txt') , batch_size=batchsize, shuffle=False)
 
     # test model1 and plot top/bottom 5
     model1 = RGBModel()
     model1.load_state_dict(torch.load(model_path / 'rgb-simple-augmentation.pth'))
     loss1, _, logits1      = test(model1, loss, test_dl)
     plot_ranking(logits1, path, "test.txt", out_path='./plots/rgb-simple-ranking.png')
+    # save/compare logits 
+    logit_path = model_path / 'rgb-simple-test-logits.pth'
+    if override or not logit_path.exists(): 
+        torch.save(logits1, logit_path)
+    else: 
+        prev_logits = torch.load(logit_path)
+        print('sum of differenece between logits: {}'.format(torch.sum(logits1 - prev_logits)))
 
     # test model2 and plot top/bottom 5
     model2 = RGBModel()
     model2.load_state_dict(torch.load(model_path / 'rgb-complex-augmentation.pth'))
     loss2, _, logits2      = test(model2, loss, test_dl)
     plot_ranking(logits2, path, "test.txt", out_path='./plots/rgb-complex-ranking.png')
+    # save/compare logits 
+    logit_path = model_path / 'rgb-complex-test-logits.pth'
+    if override or not logit_path.exists(): 
+        torch.save(logits1, logit_path)
+    else: 
+        prev_logits = torch.load(logit_path)
+        print('sum of differenece between logits: {}'.format(torch.sum(logits1 - prev_logits)))
 
     print(f"loss model_1: {loss1}")
     print(f"loss model_2: {loss2}")
