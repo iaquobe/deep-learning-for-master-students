@@ -4,5 +4,5 @@ dependencies:
   - pytorch::torchvision
   - anaconda::tqdm
   - scikit-image
-
-
+  - conda-forge::matplotlib
+  - anaconda::rasterio
