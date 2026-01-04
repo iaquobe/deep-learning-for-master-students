@@ -116,6 +116,9 @@ the saved logits (prints the sum of difference).
 You can also specify that the logits should be saved with: 
 `python -m eurosat.ms.test -s`.
 
+The test dataset is evaluated with a dataloader that has `shuffle=False`, 
+thus the order filename of the logit n is found in line n in `./data/EuroSAT_{MS,RGB}/test.txt`.
+
 
 # Model Report
 
