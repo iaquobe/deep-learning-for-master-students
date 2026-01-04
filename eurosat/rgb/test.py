@@ -62,4 +62,10 @@ if __name__ == "__main__":
     torch.manual_seed(seed)
     np.random.seed(seed)
     random.seed(seed)
-    main()
+
+
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-s', '--save', action='store_true')
+    args = parser.parse_args()
+    main(args.save)

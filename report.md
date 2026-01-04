@@ -105,6 +105,18 @@ It creates top/bottom 5 plots under:
 `./plots/ms-add-ranking.png` respectively
 
 
+# Reproduction Routine
+
+When running the test routines the logits are saved in 
+`./models/ms-add-test-logits.pth`,  `./models/ms-concat-test-logits.pth`,
+`./models/rgb-complex-augmentation.pth`,  `./models/rgb-simple-augmentation.pth`.
+When the logits are not present they are automatically saved. 
+If the logits are already saved, then the current test logits are compared to 
+the saved logits (prints the sum of difference). 
+You can also specify that the logits should be saved with: 
+`python -m eurosat.ms.test -s`.
+
+
 # Model Report
 
 
