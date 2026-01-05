@@ -157,3 +157,8 @@ thus the order filename of the logit n is found in line n in `./data/EuroSAT_{MS
 
 ![ms add model ranking](./plots/ms-add-ranking.png)
 
+# Authors
+Filius, Hans Felix - **Matrikelnummer**: 3773660
+Horn, Falko - **Matrikelnummer**: 3736695
+Lambert-Hartmann, Jacob - **Matrikelnummer**: 
+
