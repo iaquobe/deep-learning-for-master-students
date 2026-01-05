@@ -45,10 +45,10 @@ If you want to manually create splits, you can do this with:
 
 ```bash
 # will create splits for ./data/EuroSAT_RGB/
-python -m eurosat.utils.data_prep.py
+python -m eurosat.utils.data_prep
 
 
-python -m eurosat.utils.data_prep.py -d <custom-path>
+python -m eurosat.utils.data_prep -d <custom-path>
 ```
 
 # RGB Training/Testing models 
