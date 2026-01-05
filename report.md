@@ -1,11 +1,26 @@
 # Packages and Data
 
+## Pip or Conda
+### Conda
+
 Install and activate the conda environment with: 
 
 ```bash
 conda env create -f environment.yml 
 conda activate deep-learning
 ```
+
+### Pip
+
+Install and activate the pip environment with: 
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+## Data
 
 Download and unzip the files to `./data`, so that the filestructure is like this: 
 
