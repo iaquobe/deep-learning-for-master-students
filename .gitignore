@@ -1,3 +1,5 @@
 mandatory_coding_2025.pdf
 data/
 *.pyc
+*.venv/
+*.ipynb_checkpoints/

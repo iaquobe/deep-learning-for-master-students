@@ -1,0 +1,8 @@
+name: deep-learning
+dependencies: 
+  - pytorch::pytorch
+  - pytorch::torchvision
+  - anaconda::tqdm
+  - scikit-image
+  - conda-forge::matplotlib
+  - anaconda::rasterio
