@@ -23,8 +23,8 @@ def main():
     path       = Path('./data/EuroSAT_MS')
     tpr        =  dict()
     batchsize  = 64
-    epochs     = 10 
-    split      = (.75, .15, .15)
+    epochs     = 10
+    split      = (.7, .15, .15)
 
     print("Prepare splits")
     data_prep(path, split)
